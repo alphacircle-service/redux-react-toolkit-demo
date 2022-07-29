@@ -4,6 +4,14 @@ import { Account, Token } from "models";
 
 const TOKEN_TYPE_PREFIX = "auth/login";
 
+export const getToken = createAsyncThunk(
+  TOKEN_TYPE_PREFIX,
+  async (account: Account, thunkAPI) => {
+    const response = await login(account);
+    return { token: response.data.token } as Token;
+  }
+);
+
 const getTokenPending = (state: Token, action: PayloadAction<Token>) => {
   console.log(action);
   console.log(state);
@@ -20,14 +28,6 @@ const getTokenRejected = (state: Token, action: PayloadAction<Token>) => {
   console.log(action);
   console.log(state);
 };
-
-export const getToken = createAsyncThunk(
-  TOKEN_TYPE_PREFIX,
-  async (account: Account, thunkAPI) => {
-    const response = await login(account);
-    return { token: response.data.token } as Token;
-  }
-);
 
 export const reducers = {};
 
