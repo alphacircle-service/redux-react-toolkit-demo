@@ -1,38 +1,27 @@
-import { createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { login } from "apis/auth";
 import { Account, Token } from "models";
+import { TokenState } from ".";
 
 const TOKEN_TYPE_PREFIX = "auth/login";
 
-export const getToken = createAsyncThunk(
+export const getToken = createAsyncThunk<string, Account>(
   TOKEN_TYPE_PREFIX,
-  async (account: Account, thunkAPI) => {
+  async (account: Account) => {
     const response = await login(account);
-    return { token: response.data.token } as Token;
+    return response.data.token 
   }
 );
 
-const getTokenPending = (state: Token, action: PayloadAction<Token>) => {
-  console.log(action);
-  console.log(state);
-};
-
-const getTokenFulled = (state: Token, action: PayloadAction<Token>) => {
-  state.token = action.payload.token;
-  console.log(action);
-  console.log(state);
-};
-
-const getTokenRejected = (state: Token, action: PayloadAction<Token>) => {
-  state.token = "";
-  console.log(action);
-  console.log(state);
-};
-
-export const reducers = {};
-
-export const extraReducers = {
-  [getToken.pending.type]: getTokenPending,
-  [getToken.fulfilled.type]: getTokenFulled,
-  [getToken.rejected.type]: getTokenRejected,
-};
+export const extraReducers = (builder : ActionReducerMapBuilder<TokenState>) => {
+  builder.addCase(getToken.pending, state => {
+    state.status = 'pending'
+  })
+  builder.addCase(getToken.fulfilled, (state, {payload}) => {
+    state.status = 'succeeded'
+    state.token = payload
+  })
+  builder.addCase(getToken.rejected, state => {
+    state.status = 'failed'
+  })
+}

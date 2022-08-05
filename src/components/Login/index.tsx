@@ -28,8 +28,12 @@ export default function Login() {
       <Button variant="contained" onClick={onClick}>
         {LOGIN_BUTTON_TEXT}
       </Button>
-
-      <Typography>{`token-${token}`}</Typography>
+      
+      <Typography>
+        { token.status === 'succeeded' ?  
+          `token:${token.token}` 
+          : token.status}
+      </Typography>
     </Box>
   );
 }

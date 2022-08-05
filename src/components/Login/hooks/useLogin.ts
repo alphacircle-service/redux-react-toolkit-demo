@@ -1,8 +1,8 @@
 import { Account } from "models";
+import { AppDispatch, RootState } from "modules";
 import { getToken } from "modules/auths/reducers";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
 
 const EMPTY_ACCOUNT: Account = {
   username: "",
@@ -12,11 +12,7 @@ const EMPTY_ACCOUNT: Account = {
 export default function useLogin() {
   const [account, setAccount] = useState<Account>(EMPTY_ACCOUNT);
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector((state: RootState) => state.users.token);
-
-  useEffect(() => {
-    console.log(token);
-  }, [token]);
+  const token = useSelector((state: RootState) => state.authReducer);
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value, name } = e.target;
